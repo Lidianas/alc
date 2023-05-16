@@ -3,6 +3,8 @@
 # Task selecionadas: 1 e 2
 # Aluna: Lidiana Souza dos Anjos
 
+import numpy as np
+
 def back_mult(A, i, l, c):
     if i==0:
         return A.loc[i, c]*A.loc[l, i]
@@ -45,8 +47,21 @@ def residuo(X, Xold, mod=2):
 
 def matrixVector_product(A, X):
 
+    # sem erros
     Y = [0]*len(X)
     for i in range(len(X)):
         Y[i] = sum(A.loc[i, j]*X[j] for j in range(len(X)))
 
     return Y
+
+def matrixMatrix_product(A, C):
+
+    # sem erros
+    """dim = len(A)
+    C = np.transpose(C)
+    Y = np.identity(len(A))
+    for i in range(dim):
+        for j in range(dim):
+            Y[i][j] = sum(A[i]*C[j])"""
+
+    return np.matmul(A, C)

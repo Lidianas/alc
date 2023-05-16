@@ -10,6 +10,7 @@ import cholesky_decomposition
 import gauss_seidel
 import jacobi
 import power_method as pm
+import jacobi_eigenvectors as jcb_eigen
 
 print("The matrix A must be in the following format \n \
        A B C\n \
@@ -39,7 +40,7 @@ B = pd.read_csv("/home/lidiana/Desktop/ufrj/alc/t1/data/Vetor_D_01.dat", header=
 
 valid_cod = False
 while valid_cod == False:
-    print("Choose the operation \n 1 - LU Decomposition \n 2 - Cholesky Decomposition \n 3 - Procedimento Iterativo Jacobi\n 4 - Prodecimento Iterativo Gauss-Seidel")
+    print("Choose the operation \n 1 - LU Decomposition \n 2 - Cholesky Decomposition \n 3 - Jacobi Iteractive Method \n 4 - Gauss-Seidel Iteractive Method\n 5 - Power Method \n 6 - Jacobi method for eigenvalues and eigenvector")
     cod = int(input("Type the operation number \n"))
     tol = float(input("Type the tolerance in the case of iteractive methods \n"))
 
@@ -74,9 +75,22 @@ while valid_cod == False:
 
     elif cod == 5:
         eigenvalue, eigenvector, iter = pm.solve_by_pm(A, [1]*len(A), tol)
-        print("Higher eigenvalue: ", str(eigenvalue))
-        print("Higher eigenvector: ", str(eigenvector))
-        print("Iterations: ", str(iter))
+        print("Higher eigenvalue: \n", str(eigenvalue))
+        print("Higher eigenvector: \n", str(eigenvector))
+        print("Iterations: \n", str(iter))
+
+        valid_cod = True
+    
+    elif cod == 6:
+
+        if utils.sym(A):
+            eigenvalues, eigenvectors, iter = jcb_eigen.solve_by_jacobi_sym(A, tol)
+            print("Eigenvalues: \n", str(eigenvalues))
+            print("Eigenvectors: \n", str(eigenvectors))
+            print("Iterations: \n", str(iter))
+
+        else:
+            print("The matrix is not symmetric")
 
         valid_cod = True
     else:
