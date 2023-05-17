@@ -16,10 +16,12 @@ def solve_by_gauss_seidel(A, B, X, tol):
         for i in range(len(B)):
             Y[i] = round((B[i] - sum(np.array(A.iloc[i, i+1:])*X[i+1:]) - sum(np.array(A.iloc[i, :i])*Y[:i]))/A.iloc[i, i], 4)
 
-        r = utils.residuo(Y, X)
+        r = utils.residue(Y, X)
         if r <= tol:
             return Y, iter
         X = Y.copy()    
+        if iter >= 200:
+            return 1
 
 
     

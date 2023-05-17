@@ -4,6 +4,7 @@
 # Aluna: Lidiana Souza dos Anjos
 
 import pandas as pd
+import numpy as np
 import lu_decomposition
 import utils
 import cholesky_decomposition
@@ -17,60 +18,89 @@ print("The matrix A must be in the following format \n \
        D E F\n \
        G H I\n\n ")
 
-A = pd.read_csv("/home/lidiana/Desktop/ufrj/alc/t1/data/Matriz_C.dat", header=None, sep=' ', skipinitialspace=True)
-
+A = pd.read_csv("/home/lidiana/Desktop/ufrj/alc/t1/data/Matriz_A.dat", header=None, sep=' ', skipinitialspace=True)
 print("The vector B must be in the following format \n \
        P Q R ")
-    
-B = pd.read_csv("/home/lidiana/Desktop/ufrj/alc/t1/data/Vetor_D_01.dat", header=None, sep=' ', skipinitialspace=True)
 
-#N = int(input("Digite a ordem do sistema de equações \n"))
-# possible warnings:
-# - matrix A is not a square matrix
-# - the numbers of vector B lines is not the same as the number of lines from matrix A
-# - cholesky only works for symetric matrix, so this must be evaluated
-# - cholesky requires that the matrix must be define positive
-# - for iteractive methods:
-#   - there is no convergence garantee
-#   - the matrix is diagonal positive, so the convergence is assured
-# - the operation number chose did not exist, please choose from the list below
-# relevant infos:
-# - 
-# - the matrix is define positive, so the convergence is assured
-
+B1 = pd.read_csv("/home/lidiana/Desktop/ufrj/alc/t1/data/Vetor_B_01.dat", header=None, sep=' ', skipinitialspace=True)
+B2 = pd.read_csv("/home/lidiana/Desktop/ufrj/alc/t1/data/Vetor_B_02.dat", header=None, sep=' ', skipinitialspace=True)
+B3 = pd.read_csv("/home/lidiana/Desktop/ufrj/alc/t1/data/Vetor_B_03.dat", header=None, sep=' ', skipinitialspace=True)
+B = [B1, B2, B3]
 valid_cod = False
 while valid_cod == False:
     print("Choose the operation \n 1 - LU Decomposition \n 2 - Cholesky Decomposition \n 3 - Jacobi Iteractive Method \n 4 - Gauss-Seidel Iteractive Method\n 5 - Power Method \n 6 - Jacobi method for eigenvalues and eigenvector")
     cod = int(input("Type the operation number \n"))
     tol = float(input("Type the tolerance in the case of iteractive methods \n"))
+    det = int(input("Type 0 if the determinant must be calculated \n"))
 
     if cod == 1:
-        res = lu_decomposition.solve_by_lu(A, B)
-        print(res)
+        lu = lu_decomposition.lu(np.array(A))
+        print(lu)
+        for b in B:
+            resB = lu_decomposition.solve_by_lu(lu, b)
+            print("The solution using LU decomposition \n for vector B = ", str(np.array(b.transpose())), " \n is X = ", str(resB))
+        
+        if det == 0:
+            d = 1
+            dE = utils.getDiagElem(lu)
+            for i in dE:
+                d = d * i
+            print("The determinant is ", str(d))
         valid_cod=True
 
     elif cod == 2:
             
         if utils.sym(A):
-            res = cholesky_decomposition.solve_by_cholesky(A, B)
-            print(res)
+            cho = cholesky_decomposition.cholesky(np.array(A))
+            if cho == 0:
+                print("The matrix is not positive definite")
+            else:
+                for b in B:
+                    resB = cholesky_decomposition.solve_by_cholesky(cho, b)
+                    print("The solution using Cholesky decomposition\n for vector B = ", str(np.array(b.transpose())), "\n is X = ", str(resB))
+                
+                if det == 0:
+                    d = 1
+                    dE = utils.getDiagElem(cho)
+                    for i in dE:
+                        d = d * i
+                    print("The determinant is ", str(d))
+
         else:
-            print("The matrix is not symmetric")
+            print("The matrix is not symmetric, therefore cholesky can't be used")
 
         valid_cod = True
             
     elif cod == 3:
-        X, iter = jacobi.solve_by_jacobi(A, B, [1]*len(B), tol)
-        print("Solution: ", str(X))
-        print("Iterations: ", str(iter))
+        if utils.diagDom(A) == 0:
+            for b in B:
+                X, iter = jacobi.solve_by_jacobi(A, b, [1]*len(b), tol)
+                if X == 1:
+                    print("After 200 iterations, the method does not converge")
+                else:
+                    print("The solution using Jabobi iteractive method\n for vector B = ", str(np.array(b.transpose())), "\n is X = ", str(X))
+                    print("Iterations: ", str(iter))
+        else:
+            print("The matrix is not diagonally dominant, therefore the method will not converge")
 
+        if det == 0:
+            print("The determinant can't be calculated by this method")
         valid_cod = True
 
     elif cod == 4:
-        X, iter = gauss_seidel.solve_by_gauss_seidel(A, B, [1]*len(B), tol)
-        print("Solution: ", str(X))
-        print("Iterations: ", str(iter))
+        if utils.diagDom(A) == 0:
+            for b in B:
+                X, iter = gauss_seidel.solve_by_gauss_seidel(A, b, [1]*len(b), tol)
+                if X == 1:
+                    print("After 200 iterations, the method does not converge")
+                else:
+                    print("The solution using Gauss-Seidel iteractive method\n for vector B = ", str(np.array(b.transpose())), "\n is X = ", str(X))
+                    print("Iterations: ", str(iter))
+        else:
+            print("The matrix is not diagonally dominant, therefore the method will not converge")
 
+        if det == 0:
+            print("The determinant can't be calculated by this method")
         valid_cod = True
 
     elif cod == 5:
@@ -79,19 +109,26 @@ while valid_cod == False:
         print("Higher eigenvector: \n", str(eigenvector))
         print("Iterations: \n", str(iter))
 
+        if det == 0:
+            print("The determinant can't be calculated by this method")
         valid_cod = True
     
     elif cod == 6:
 
         if utils.sym(A):
             eigenvalues, eigenvectors, iter = jcb_eigen.solve_by_jacobi_sym(A, tol)
-            print("Eigenvalues: \n", str(eigenvalues))
+            print("Eigenvalues: \n", str(np.transpose(eigenvalues)))
             print("Eigenvectors: \n", str(eigenvectors))
             print("Iterations: \n", str(iter))
 
         else:
             print("The matrix is not symmetric")
 
+        if det == 0:
+            d = 1
+            for i in eigenvalues:
+                d = d * i
+            print("The determinant is ", str(d))
         valid_cod = True
     else:
         print("--------------------Warning!---------------------------")

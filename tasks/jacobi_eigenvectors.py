@@ -27,9 +27,6 @@ def calcTeta(maxV, Aii, Ajj):
     if Aii == Ajj:
         return np.pi/4
     else:
-        
-        teta = (1/2)*math.atan((2*maxV)/(Aii - Ajj))
-        print("teta:",str(teta))
         return (1/2)*math.atan((2*maxV)/(Aii - Ajj))
         
 
@@ -54,10 +51,10 @@ def solve_by_jacobi_sym(A, tol):
 
     dim = len(A)
     A = np.asmatrix(A)
-    print(A)
     X = np.identity(dim)
     isDEH = True
     iter = 0
+    eigenvalues = []
     while isDEH==True:
         posMaxV = maxValue(A)
         teta = calcTeta(A[posMaxV[0], posMaxV[1]], A[posMaxV[0], posMaxV[0]], A[posMaxV[1], posMaxV[1]])
@@ -68,8 +65,11 @@ def solve_by_jacobi_sym(A, tol):
         X = utils.matrixMatrix_product(X, P)
         isDEH = isDiagElemHigher(A, dim, tol)
         iter += 1
+    
+    for i in range(len(A)):
+            eigenvalues.append(round(A[i, i], 4))
 
-    return A, X, iter
+    return eigenvalues, X, iter
 
 
     

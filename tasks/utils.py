@@ -7,9 +7,9 @@ import numpy as np
 
 def back_mult(A, i, l, c):
     if i==0:
-        return A.loc[i, c]*A.loc[l, i]
+        return A[i, c]*A[l, i]
     else: 
-        return A.loc[i, c]*A.loc[l, i] + back_mult(A, i-1, l, c)
+        return A[i, c]*A[l, i] + back_mult(A, i-1, l, c)
 
 def sym(M):
     sim = True
@@ -32,11 +32,10 @@ def diagDom(M):
                 sumL = sumL + M[i][j]
                 sumC = sumC + M[j][i]
         if M[i][i] < sumL or M[i][i] < sumC:
-            print("Possibilidade de não convergência pois a matriz não é diagonal dominante.")
             return 0
     return 1
 
-def residuo(X, Xold, mod=2):
+def residue(X, Xold, mod=2):
 
     if mod==2:
         r = ((sum((X[i]-Xold[i])**2 for i in range(len(X))))**(1/2))/(sum(X[i]**2 for i in range(len(X)))**(1/2))
@@ -47,16 +46,14 @@ def residuo(X, Xold, mod=2):
 
 def matrixVector_product(A, X):
 
-    # sem erros
-    Y = [0]*len(X)
+    """Y = [0]*len(X)
     for i in range(len(X)):
-        Y[i] = sum(A.loc[i, j]*X[j] for j in range(len(X)))
+        Y[i] = sum(A.loc[i, j]*X[j] for j in range(len(X)))"""
 
-    return Y
+    return np.dot(A, X)
 
 def matrixMatrix_product(A, C):
 
-    # sem erros
     """dim = len(A)
     C = np.transpose(C)
     Y = np.identity(len(A))
@@ -65,3 +62,13 @@ def matrixMatrix_product(A, C):
             Y[i][j] = sum(A[i]*C[j])"""
 
     return np.matmul(A, C)
+
+def getDiagElem(A):
+
+    diagElem = []
+    for i in range(len(A)):
+        for j in range(len(A)):
+            if i == j:
+                diagElem.append(A[i][i])
+    
+    return diagElem

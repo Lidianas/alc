@@ -5,22 +5,29 @@
 
 import utils as ut
 import pandas as pd
+import numpy as np
 
 def solve_by_pm(A, X, tol):
 
     iter = 0
     oldLambda = 1
+    ind = 0
     while True:
-        iter += 1
+        
         Y = ut.matrixVector_product(A, X)
-        newLambda = max(Y)
-        r = ut.residuo(newLambda, oldLambda, 1)
-        oldLambda = newLambda
-        X = Y/newLambda
+        if iter == 0:
+            newLambda = max(Y.min(), Y.max(), key=abs)
+            ind = np.where(Y==newLambda)[0][0]
+        else:
+            newLambda = Y[ind]
+            
+        r = ut.residue(newLambda, oldLambda, 1)
         if r <= tol: 
             return newLambda, X, iter
-
-        
+        else:
+            oldLambda = newLambda
+            X = Y/newLambda
+        iter += 1
 
     
 
