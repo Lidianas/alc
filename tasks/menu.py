@@ -29,14 +29,13 @@ B1 = pd.read_csv("/home/lidiana/Desktop/ufrj/alc/t1/data/Vetor_B_01.dat", header
 B2 = pd.read_csv("/home/lidiana/Desktop/ufrj/alc/t1/data/Vetor_B_02.dat", header=None, sep=' ', skipinitialspace=True)
 B3 = pd.read_csv("/home/lidiana/Desktop/ufrj/alc/t1/data/Vetor_B_03.dat", header=None, sep=' ', skipinitialspace=True)
 B = [B1[0].to_numpy(), B2[0].to_numpy(), B3[0].to_numpy()]
-
 valid_cod = False
 
 while valid_cod == False:
     print("Choose the operation \n 1 - LU Decomposition \n 2 - Cholesky Decomposition \n 3 - Jacobi Iteractive Method \n 4 - Gauss-Seidel Iteractive Method\n 5 - Power Method \n 6 - Jacobi method for eigenvalues and eigenvector")
     cod = int(input("Type the operation number \n"))
     tol = float(input("Type the tolerance in the case of iteractive methods \n"))
-    det = int(input("Type 0 if the determinant must be calculated \n"))
+    det = int(input("Type 0 if the determinant must be calculated"))
 
     if cod == 1:
         print("------------------------------------------------")
@@ -70,13 +69,13 @@ while valid_cod == False:
         if utils.sym(A):
             cho = cholesky_decomposition.cholesky(np.array(A))
             print(cho)
-            if cho == 0 or cho.all() == 0:
+            if type(cho) == int:
                 print("\nThe matrix is not positive definite")
             else:
                 for b in B:
                     resB = cholesky_decomposition.solve_by_cholesky(cho, b)
                     print("\nThe solution using Cholesky decomposition\n for vector B = ")
-                    utils.printM("\t",B[b])
+                    utils.printM("\t",b)
                     print("is X:")
                     utils.printM("  ",resB)
                 
@@ -96,16 +95,16 @@ while valid_cod == False:
         print("------------------------------------------------")
         print("            Jacobi Iterative")
         print("------------------------------------------------")
-        if utils.diagDom(A) == 0:
+        if utils.diagDom(A) == 1:
             for b in B:
                 X, iter = jacobi.solve_by_jacobi(A, b, [1]*len(b), tol)
                 if X == 1:
                     print("\nAfter 200 iterations, the method does not converge")
                 else:
                     print("\nThe solution using Jabobi iterative method\n for vector B = ")
-                    utils.printM("\t",B[b])
+                    utils.printM("\t",b)
                     print("is X:")
-                    utils.printM("  ",resB)
+                    utils.printM("  ",X)
                     print("\nIterations: ", str(iter))
         else:
             print("\nThe matrix is not diagonally dominant, therefore the method will not converge")
@@ -118,16 +117,16 @@ while valid_cod == False:
         print("------------------------------------------------")
         print("           Gauss-Seidel Iterative")
         print("------------------------------------------------")
-        if utils.diagDom(A) == 0:
+        if utils.diagDom(A) == 1:
             for b in B:
                 X, iter = gauss_seidel.solve_by_gauss_seidel(A, b, [1]*len(b), tol)
                 if X == 1:
                     print("\nAfter 200 iterations, the method does not converge")
                 else:
                     print("\nThe solution using Gauss-Seidel iterative method\n for vector B = ")
-                    utils.printM("\t",B[b])
+                    utils.printM(" ",b)
                     print("is X:")
-                    utils.printM("  ",resB)
+                    utils.printM("  ",X)
                     print("\nIterations: ", str(iter))
         else:
             print("\nThe matrix is not diagonally dominant, therefore the method will not converge")

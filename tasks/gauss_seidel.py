@@ -8,7 +8,6 @@ import numpy as np
 
 def solve_by_gauss_seidel(A, B, X, tol):
 
-    B = B[0].to_numpy()
     Y = [0]*len(X)
     iter = 0
     while True:
