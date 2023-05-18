@@ -1,3 +1,8 @@
+# Álgebra Linear Computacional - 2023.1
+# Trabalho 01
+# Task selecionadas: 1 e 2
+# Aluna: Lidiana Souza dos Anjos
+
 def forward_substitution(A, B, is_lu=True):
 
     i = 0

@@ -1,5 +1,11 @@
+# Álgebra Linear Computacional - 2023.1
+# Trabalho 01
+# Task selecionadas: 1 e 2
+# Aluna: Lidiana Souza dos Anjos
+
 import back_forward_substitution
 import numpy as np
+
 def lu(M):
     
     len_A = len(M)
