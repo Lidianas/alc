@@ -45,30 +45,20 @@ def residue(X, Xold, mod=2):
         return r
 
 def matrixVector_product(A, X):
-
-    """Y = [0]*len(X)
-    for i in range(len(X)):
-        Y[i] = sum(A.loc[i, j]*X[j] for j in range(len(X)))"""
-
     return np.dot(A, X)
 
 def matrixMatrix_product(A, C):
-
-    """dim = len(A)
-    C = np.transpose(C)
-    Y = np.identity(len(A))
-    for i in range(dim):
-        for j in range(dim):
-            Y[i][j] = sum(A[i]*C[j])"""
-
     return np.matmul(A, C)
 
 def getDiagElem(A):
 
     diagElem = []
     for i in range(len(A)):
-        for j in range(len(A)):
-            if i == j:
-                diagElem.append(A[i][i])
+        diagElem.append(A[i][i])
     
     return diagElem
+
+def printM(space, M):
+
+    for data in M:
+        print(space, '{:9.3f}'.format(data))

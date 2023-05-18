@@ -26,7 +26,6 @@ def cholesky(A):
     return A
 
 def solve_by_cholesky(A, B):
-    cho = cholesky(A)
-    Y = back_forward_substitution.forward_substitution(cho, B, False)
-    X = back_forward_substitution.backward_substitution(cho, Y)
+    Y = back_forward_substitution.forward_substitution(A, B, False)
+    X = back_forward_substitution.backward_substitution(A, Y)
     return X
